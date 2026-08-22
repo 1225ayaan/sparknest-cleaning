@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sparknest-cleaning.vercel.app/sitemap.xml
