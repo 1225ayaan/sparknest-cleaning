@@ -1,6 +1,12 @@
 import heroImage from "../assets/hero-cleaning.jpg";
 
 function Hero() {
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="bg-slate-50 min-h-[85vh] flex items-center">
       <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
@@ -26,21 +32,21 @@ function Hero() {
           {/* Buttons */}
           <div className="mt-8 flex flex-wrap gap-4">
 
-            {/* Book Cleaning */}
-            <a
-              href="#contact"
+            {/* Book a Cleaning */}
+            <button
+              onClick={() => scrollToSection("contact")}
               className="bg-blue-600 text-white px-7 py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
               Book a Cleaning
-            </a>
+            </button>
 
             {/* Explore Services */}
-            <a
-              href="#services"
+            <button
+              onClick={() => scrollToSection("services")}
               className="border border-gray-300 bg-white text-gray-800 px-7 py-3.5 rounded-lg font-semibold hover:bg-gray-50 transition"
             >
               Explore Services
-            </a>
+            </button>
 
           </div>
 
@@ -73,13 +79,11 @@ function Hero() {
 
         {/* Right Image */}
         <div className="relative">
-
           <img
             src={heroImage}
             alt="Professional cleaning service"
             className="w-full h-[450px] object-cover rounded-3xl shadow-xl"
           />
-
         </div>
 
       </div>

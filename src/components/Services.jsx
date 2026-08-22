@@ -13,7 +13,7 @@ function Services() {
     {
       title: "Deep Cleaning",
       description:
-        "Detailed cleaning that reaches hard-to-clean areas and leaves your space fresh and spotless.",
+        "Detailed cleaning that reaches those hard-to-clean areas and leaves your space refreshed.",
       image: kitchenImage,
     },
     {
@@ -42,41 +42,43 @@ function Services() {
     },
   ];
 
+  const handleLearnMore = (serviceName) => {
+    const contactSection = document.getElementById("contact");
+
+    if (contactSection) {
+      contactSection.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+
+    console.log(`Customer selected: ${serviceName}`);
+  };
+
   return (
-    <section
-      id="services"
-      aria-labelledby="services-heading"
-      className="bg-white py-24"
-    >
+    <section id="services" className="bg-white py-24">
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* Section Heading */}
+        {/* Heading */}
         <div className="text-center max-w-3xl mx-auto">
-
           <p className="text-blue-600 font-semibold uppercase tracking-wide">
             Our Services
           </p>
 
-          <h2
-            id="services-heading"
-            className="mt-3 text-4xl md:text-5xl font-bold text-gray-900"
-          >
+          <h2 className="mt-3 text-4xl md:text-5xl font-bold text-gray-900">
             Professional Cleaning Services
           </h2>
 
-          <p className="mt-5 text-lg text-gray-600 leading-relaxed">
+          <p className="mt-5 text-lg text-gray-600">
             From regular home cleaning to detailed deep cleaning,
-            SparkNest is here to keep every space fresh, clean and
-            comfortable.
+            SparkNest is here to keep every space fresh and spotless.
           </p>
-
         </div>
 
         {/* Service Cards */}
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {services.map((service) => (
-            <article
+            <div
               key={service.title}
               className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition duration-300"
             >
@@ -85,8 +87,7 @@ function Services() {
               <div className="overflow-hidden">
                 <img
                   src={service.image}
-                  alt={`${service.title} cleaning service`}
-                  loading="lazy"
+                  alt={service.title}
                   className="w-full h-56 object-cover group-hover:scale-105 transition duration-500"
                 />
               </div>
@@ -102,37 +103,19 @@ function Services() {
                   {service.description}
                 </p>
 
-                {/* CTA */}
-                <a
-                  href="#contact"
-                  className="inline-block mt-5 text-blue-600 font-semibold hover:text-blue-800 transition"
+                {/* Learn More */}
+                <button
+                  onClick={() => handleLearnMore(service.title)}
+                  className="mt-5 text-blue-600 font-semibold hover:text-blue-800 transition"
                 >
-                  Book This Service →
-                </a>
+                  Learn More →
+                </button>
 
               </div>
-
-            </article>
+            </div>
           ))}
 
         </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-14 text-center">
-
-          <p className="text-gray-600">
-            Need a customized cleaning service?
-          </p>
-
-          <a
-            href="#contact"
-            className="inline-block mt-4 bg-blue-600 text-white px-7 py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition"
-          >
-            Get a Free Quote
-          </a>
-
-        </div>
-
       </div>
     </section>
   );
