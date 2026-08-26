@@ -121,7 +121,7 @@ function Footer() {
                 </p>
 
                 <p className="mt-1 text-gray-300">
-                  +1 (555) 123-4567
+                  +91 (880) 615-5264
                 </p>
               </div>
 
