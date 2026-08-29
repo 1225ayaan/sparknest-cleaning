@@ -34,7 +34,6 @@ function AIChatbot() {
     ]);
   };
 
-  // Start quote manually
   const startQuote = () => {
     setQuoteMode(true);
 
@@ -44,7 +43,6 @@ function AIChatbot() {
     );
   };
 
-  // Collect quote information
   const handleQuoteMessage = (userMessage) => {
     const trimmed = userMessage.trim();
 
@@ -67,12 +65,24 @@ function AIChatbot() {
     }
 
     if (!data.phone) {
-      data.phone = trimmed;
+      const phone = trimmed.replace(/[\s()-]/g, "");
+
+      const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
+
+      if (!phoneRegex.test(phone)) {
+        addMessage(
+          "ai",
+          "📱 Please enter a valid 10-digit mobile number. You can also enter it with +91, for example: +91 9876543210."
+        );
+        return;
+      }
+
+      data.phone = phone;
       setQuoteData(data);
 
       addMessage(
         "ai",
-        "Great. Which cleaning service do you need? For example: Home Cleaning, Deep Cleaning, Office Cleaning, Window Cleaning, Regular Cleaning, or Move-In / Move-Out."
+        "Perfect! 👍 Which cleaning service do you need? For example: Home Cleaning, Deep Cleaning, Office Cleaning, Window Cleaning, Regular Cleaning, or Move-In / Move-Out."
       );
       return;
     }
@@ -129,12 +139,9 @@ function AIChatbot() {
         "ai",
         "Perfect! 🎉 Your quote request is ready. You can send these details to SparkNest through WhatsApp using the button below."
       );
-
-      return;
     }
   };
 
-  // Send quote to WhatsApp
   const sendQuoteToWhatsApp = () => {
     const whatsappNumber = "918806155264";
 
@@ -161,7 +168,6 @@ ${quoteData.requirement}
     window.open(whatsappUrl, "_blank");
   };
 
-  // AI message
   const sendAIMessage = async (userMessage) => {
     const trimmed = userMessage.trim();
 
@@ -172,15 +178,18 @@ ${quoteData.requirement}
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://sparknest-cleaning.onrender.com/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: trimmed,
-        }),
-      });
+      const response = await fetch(
+        "https://sparknest-cleaning.onrender.com/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: trimmed,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -188,10 +197,8 @@ ${quoteData.requirement}
         throw new Error(data.error || "Something went wrong");
       }
 
-      // AI response
       addMessage("ai", data.reply);
 
-      // ⭐ SMART INTENT DETECTION
       if (data.intent === "quote") {
         setQuoteMode(true);
 
@@ -200,7 +207,6 @@ ${quoteData.requirement}
           "I can help you prepare a free quote request. 😊 Let’s get a few details. What is your name?"
         );
       }
-
     } catch (error) {
       console.error("Chatbot Error:", error);
 
@@ -233,20 +239,12 @@ ${quoteData.requirement}
 
   return (
     <>
-      {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-5 z-50 flex w-[350px] max-w-[calc(100vw-40px)] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-
-          {/* Header */}
           <div className="flex items-center justify-between bg-blue-600 px-4 py-4 text-white">
             <div>
-              <h3 className="font-semibold">
-                SparkNest AI Assistant
-              </h3>
-
-              <p className="text-xs opacity-90">
-                Online • Here to help
-              </p>
+              <h3 className="font-semibold">SparkNest AI Assistant</h3>
+              <p className="text-xs opacity-90">Online • Here to help</p>
             </div>
 
             <button
@@ -258,16 +256,12 @@ ${quoteData.requirement}
             </button>
           </div>
 
-          {/* Messages */}
           <div className="h-[350px] overflow-y-auto bg-gray-50 p-4">
-
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`mb-3 flex ${
-                  msg.sender === "user"
-                    ? "justify-end"
-                    : "justify-start"
+                  msg.sender === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
@@ -282,7 +276,6 @@ ${quoteData.requirement}
               </div>
             ))}
 
-            {/* Loading */}
             {isLoading && (
               <div className="mb-3 flex justify-start">
                 <div className="rounded-2xl rounded-tl-none bg-white p-3 text-sm text-gray-500 shadow">
@@ -291,15 +284,11 @@ ${quoteData.requirement}
               </div>
             )}
 
-            {/* Quick Actions */}
             {messages.length === 1 && !quoteMode && (
               <div className="mt-4 flex flex-wrap gap-2">
-
                 <button
                   onClick={() =>
-                    sendAIMessage(
-                      "What cleaning services do you offer?"
-                    )
+                    sendAIMessage("What cleaning services do you offer?")
                   }
                   className="rounded-full border bg-white px-3 py-2 text-xs hover:bg-gray-100"
                 >
@@ -314,34 +303,25 @@ ${quoteData.requirement}
                 </button>
 
                 <button
-                  onClick={() =>
-                    sendAIMessage(
-                      "How can I contact SparkNest?"
-                    )
-                  }
+                  onClick={() => sendAIMessage("How can I contact SparkNest?")}
                   className="rounded-full border bg-white px-3 py-2 text-xs hover:bg-gray-100"
                 >
                   📞 Contact Us
                 </button>
-
               </div>
             )}
 
-            {/* WhatsApp Quote Button */}
             {isQuoteComplete && (
               <button
                 onClick={sendQuoteToWhatsApp}
-                className="mt-3 w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow hover:bg-green-700 transition"
+                className="mt-3 w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow transition hover:bg-green-700"
               >
                 💬 Send Quote Request on WhatsApp
               </button>
             )}
-
           </div>
 
-          {/* Input */}
           <div className="flex items-center gap-2 border-t bg-white p-3">
-
             <input
               type="text"
               value={message}
@@ -352,9 +332,7 @@ ${quoteData.requirement}
                 }
               }}
               placeholder={
-                quoteMode
-                  ? "Enter your answer..."
-                  : "Ask me anything..."
+                quoteMode ? "Enter your answer..." : "Ask me anything..."
               }
               disabled={isLoading}
               className="flex-1 rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -367,12 +345,10 @@ ${quoteData.requirement}
             >
               Send
             </button>
-
           </div>
         </div>
       )}
 
-      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-blue-700"
