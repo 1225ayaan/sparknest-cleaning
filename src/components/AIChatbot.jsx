@@ -24,18 +24,10 @@ function AIChatbot() {
     requirement: "",
   });
 
-  // Add message
   const addMessage = (sender, text) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        sender,
-        text,
-      },
-    ]);
+    setMessages((prev) => [...prev, { sender, text }]);
   };
 
-  // Start quote
   const startQuote = () => {
     setQuoteMode(true);
 
@@ -45,20 +37,16 @@ function AIChatbot() {
     );
   };
 
-  // Handle quote information
   const handleQuoteMessage = (userMessage) => {
     const trimmed = userMessage.trim();
 
-    if (!trimmed) {
-      return;
-    }
+    if (!trimmed) return;
 
     addMessage("user", trimmed);
     setMessage("");
 
     const data = { ...quoteData };
 
-    // Name
     if (!data.name) {
       data.name = trimmed;
       setQuoteData(data);
@@ -67,11 +55,9 @@ function AIChatbot() {
         "ai",
         "Thanks! What phone number should the SparkNest team use to contact you?"
       );
-
       return;
     }
 
-    // Phone
     if (!data.phone) {
       let phone = trimmed.replace(/[\s()-]/g, "");
 
@@ -86,9 +72,8 @@ function AIChatbot() {
       if (!phoneRegex.test(phone)) {
         addMessage(
           "ai",
-          "📱 Please enter a valid 10-digit Indian mobile number. Example: 9876543210 or +91 9876543210."
+          "📱 Please enter a valid 10-digit Indian mobile number.\n\nExample: 9876543210 or +91 9876543210"
         );
-
         return;
       }
 
@@ -97,13 +82,11 @@ function AIChatbot() {
 
       addMessage(
         "ai",
-        "Perfect! 👍 Which cleaning service do you need? For example: Home Cleaning, Deep Cleaning, Office Cleaning, Window Cleaning, Regular Cleaning, or Move-In / Move-Out."
+        "Perfect! 👍 Which cleaning service do you need?\n\nFor example: Home Cleaning, Deep Cleaning, Office Cleaning, Window Cleaning, Regular Cleaning, or Move-In / Move-Out."
       );
-
       return;
     }
 
-    // Service
     if (!data.service) {
       data.service = trimmed;
       setQuoteData(data);
@@ -112,24 +95,20 @@ function AIChatbot() {
         "ai",
         "Got it. Is this for a home, apartment, office, or another type of property?"
       );
-
       return;
     }
 
-    // Property
     if (!data.property) {
       data.property = trimmed;
       setQuoteData(data);
 
       addMessage(
         "ai",
-        "Thanks! What is the location where you need the cleaning service?"
+        "Thanks! 📍 What is the location where you need the cleaning service?"
       );
-
       return;
     }
 
-    // Location
     if (!data.location) {
       data.location = trimmed;
       setQuoteData(data);
@@ -138,24 +117,20 @@ function AIChatbot() {
         "ai",
         "What date or approximate day would you prefer for the cleaning?"
       );
-
       return;
     }
 
-    // Date
     if (!data.date) {
       data.date = trimmed;
       setQuoteData(data);
 
       addMessage(
         "ai",
-        "Almost done! Please briefly describe what you need cleaned or any special requirements."
+        "Almost done! 🧹 Please briefly describe what you need cleaned or any special requirements."
       );
-
       return;
     }
 
-    // Requirement
     if (!data.requirement) {
       data.requirement = trimmed;
       setQuoteData(data);
@@ -167,7 +142,6 @@ function AIChatbot() {
     }
   };
 
-  // Send quote to WhatsApp
   const sendQuoteToWhatsApp = () => {
     const whatsappNumber = "918806155264";
 
@@ -196,16 +170,15 @@ ${quoteData.requirement}
     window.open(whatsappUrl, "_blank");
   };
 
-  // Instant FAQ responses
   const handleInstantMessage = (userMessage) => {
     const text = userMessage.toLowerCase().trim();
 
-    // Cleaning Services
     if (
       text.includes("cleaning services") ||
       text.includes("what services") ||
       text.includes("services do you offer") ||
-      text.includes("what do you offer")
+      text.includes("what do you offer") ||
+      text === "services"
     ) {
       addMessage(
         "ai",
@@ -224,7 +197,6 @@ If you'd like, I can also help you prepare a free quote request. 😊`
       return true;
     }
 
-    // Contact
     if (
       text.includes("contact us") ||
       text.includes("contact sparknest") ||
@@ -252,7 +224,6 @@ Monday - Saturday
       return true;
     }
 
-    // Price / Cost
     if (
       text.includes("price") ||
       text.includes("pricing") ||
@@ -274,7 +245,6 @@ You can request a free quote, and our team can provide the appropriate pricing f
       return true;
     }
 
-    // Working Hours
     if (
       text.includes("working hours") ||
       text.includes("opening hours") ||
@@ -295,23 +265,90 @@ Monday - Saturday
     return false;
   };
 
-  // Send AI message
+  const handleFallbackMessage = (userMessage) => {
+    const text = userMessage.toLowerCase();
+
+    if (
+      text.includes("house cleaning") ||
+      text.includes("home cleaning") ||
+      text.includes("clean my house") ||
+      text.includes("clean my home")
+    ) {
+      addMessage(
+        "ai",
+        `🏠 Absolutely! SparkNest Cleaning can help with home cleaning.
+
+We offer:
+• Regular Home Cleaning
+• Deep Cleaning
+• Kitchen Cleaning
+• Bathroom Cleaning
+• Move-In / Move-Out Cleaning
+
+If you'd like a free quote, click "Get a Quote" or simply type "quote". 😊`
+      );
+
+      return true;
+    }
+
+    if (
+      text.includes("tomorrow") ||
+      text.includes("today") ||
+      text.includes("book") ||
+      text.includes("booking") ||
+      text.includes("appointment")
+    ) {
+      addMessage(
+        "ai",
+        `📅 We can help you prepare a cleaning request.
+
+For availability and pricing, please provide your details through our free quote request.
+
+Type "quote" to get started. 😊`
+      );
+
+      return true;
+    }
+
+    if (
+      text.includes("quote") ||
+      text.includes("quotation") ||
+      text.includes("free quote") ||
+      text.includes("estimate")
+    ) {
+      startQuote();
+      return true;
+    }
+
+    if (
+      text.includes("cleaning") ||
+      text.includes("cleaner") ||
+      text.includes("clean my")
+    ) {
+      addMessage(
+        "ai",
+        `🧹 Sure! SparkNest Cleaning provides professional cleaning services for homes and offices.
+
+Would you like to request a free quote? 😊`
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+
   const sendAIMessage = async (userMessage) => {
     const trimmed = userMessage.trim();
 
-    if (!trimmed || isLoading) {
-      return;
-    }
+    if (!trimmed || isLoading) return;
 
     addMessage("user", trimmed);
     setMessage("");
 
-    // Instant response first
-    const handledInstantly = handleInstantMessage(trimmed);
+    if (handleInstantMessage(trimmed)) return;
 
-    if (handledInstantly) {
-      return;
-    }
+    if (handleFallbackMessage(trimmed)) return;
 
     setIsLoading(true);
 
@@ -329,17 +366,21 @@ Monday - Saturday
         }
       );
 
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Something went wrong"
+      if (data.reply) {
+        addMessage("ai", data.reply);
+      } else {
+        addMessage(
+          "ai",
+          "🤖 I received your message, but I couldn't generate a response right now."
         );
       }
 
-      addMessage("ai", data.reply);
-
-      // Quote intent
       if (data.intent === "quote") {
         setQuoteMode(true);
 
@@ -353,15 +394,27 @@ Monday - Saturday
 
       addMessage(
         "ai",
-        "Sorry, I’m having trouble connecting right now. Please try again or contact the SparkNest team."
+        `🤖 I'm currently unable to connect to the AI server.
+
+But I can still help you with SparkNest Cleaning.
+
+You can ask me about:
+• Cleaning Services
+• Pricing
+• Working Hours
+• Contact Details
+• Free Quote
+
+Or type "quote" to request a cleaning quote. 😊`
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Send message
   const sendMessage = () => {
+    if (!message.trim() || isLoading) return;
+
     if (quoteMode) {
       handleQuoteMessage(message);
     } else {
@@ -369,7 +422,6 @@ Monday - Saturday
     }
   };
 
-  // Check quote complete
   const isQuoteComplete =
     quoteMode &&
     quoteData.name &&
@@ -382,11 +434,9 @@ Monday - Saturday
 
   return (
     <>
-      {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-5 z-50 flex w-[350px] max-w-[calc(100vw-40px)] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-
-          {/* Header */}
+          
           <div className="flex items-center justify-between bg-blue-600 px-4 py-4 text-white">
             <div>
               <h3 className="font-semibold">
@@ -399,6 +449,7 @@ Monday - Saturday
             </div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="text-xl hover:opacity-80"
               aria-label="Close chatbot"
@@ -407,9 +458,7 @@ Monday - Saturday
             </button>
           </div>
 
-          {/* Messages */}
           <div className="h-[350px] overflow-y-auto bg-gray-50 p-4">
-
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -431,7 +480,6 @@ Monday - Saturday
               </div>
             ))}
 
-            {/* Loading */}
             {isLoading && (
               <div className="mb-3 flex justify-start">
                 <div className="rounded-2xl rounded-tl-none bg-white p-3 text-sm text-gray-500 shadow">
@@ -440,12 +488,11 @@ Monday - Saturday
               </div>
             )}
 
-            {/* Quick Actions */}
             {messages.length === 1 && !quoteMode && (
               <div className="mt-4 flex flex-wrap gap-2">
 
-                {/* Cleaning Services */}
                 <button
+                  type="button"
                   onClick={() => {
                     addMessage(
                       "user",
@@ -461,16 +508,16 @@ Monday - Saturday
                   🧹 Cleaning Services
                 </button>
 
-                {/* Get Quote */}
                 <button
+                  type="button"
                   onClick={startQuote}
                   className="rounded-full border bg-white px-3 py-2 text-xs hover:bg-gray-100"
                 >
                   💰 Get a Quote
                 </button>
 
-                {/* Contact */}
                 <button
+                  type="button"
                   onClick={() => {
                     addMessage(
                       "user",
@@ -489,21 +536,18 @@ Monday - Saturday
               </div>
             )}
 
-            {/* WhatsApp Button */}
             {isQuoteComplete && (
               <button
+                type="button"
                 onClick={sendQuoteToWhatsApp}
                 className="mt-3 w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white shadow transition hover:bg-green-700"
               >
                 💬 Send Quote Request on WhatsApp
               </button>
             )}
-
           </div>
 
-          {/* Input */}
           <div className="flex items-center gap-2 border-t bg-white p-3">
-
             <input
               type="text"
               value={message}
@@ -523,19 +567,19 @@ Monday - Saturday
             />
 
             <button
+              type="button"
               onClick={sendMessage}
               disabled={isLoading}
               className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Send
             </button>
-
           </div>
         </div>
       )}
 
-      {/* Floating Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-blue-700"
         aria-label="Open AI Chatbot"
